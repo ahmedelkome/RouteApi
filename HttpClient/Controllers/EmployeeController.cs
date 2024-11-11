@@ -41,6 +41,33 @@ using Newtonsoft.Json;
             }
 
 
+
+              [HttpGet("GetAllEmployeeForIIS")]
+            public async Task<IActionResult> GetAllEmployeeForIIS()
+            {
+                try
+                {
+                    var getResultApi = await _httpClient.GetAsync("http://localhost:6060/EmployeeDetailsApi/GetAllEmployee");
+
+                    if (getResultApi.IsSuccessStatusCode)
+                    {
+                        var result = await getResultApi.Content.ReadAsStringAsync();
+                        var employeeList = JsonConvert.DeserializeObject<List<Employee>>(result);
+                        return Ok(employeeList);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Error: " + getResultApi.ReasonPhrase);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+
         }
     
 
